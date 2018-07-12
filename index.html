@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#3397db"/>
+    <title>Restaurant Reviews</title>
+    <link rel="icon" type="image/png" href="/favicon.ico.png" sizes="32x32">
+    <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+
+    <!-- header -->
+    <header>
+
+      <nav>
+        <h1><a href="/">Restaurant<br>Reviews</a></h1>
+      </nav>
+
+    </header>
+
+    <!-- skip-link -->
+    <a href="#filter-results" class="skip-link" onclick="changeFocus();">Skip to restaurant selection</a>
+    <!-- main -->
+    <main id="maincontent">
+
+      <section id="map-container">
+      <div id="map" tabindex="0" role="application" aria-label="Map with restaurants in New York"></div>
+      </section>
+
+      <section>
+        <div class="filter-options">
+          <h2 id="filter-results" tabindex="-1">Filter Results</h2>
+          <select id="neighborhoods-select" aria-label="Choose the neighborhood you are looking for a restaurant" name="neighborhoods" onchange="updateRestaurants()">
+            <option value="all">All Neighborhoods</option>
+          </select>
+          <select id="cuisines-select" aria-label="Choose a cuisines" name="cuisines" onchange="updateRestaurants()">
+            <option value="all">All Cuisines</option>
+          </select>
+        </div>
+        <ul id="restaurants-list"></ul>
+      </section>
+
+    </main>
+
+    <!-- footer -->
+    <footer id="footer">
+      Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    </footer>
+
+    <!-- script -->
+    <script type="application/javascript" charset="utf-8" src="js/dbhelper.js"></script>
+    <script type="application/javascript" charset="utf-8" src="js/main.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCW7kkA7SU-iDqKCur4Vq4QDcvAghV1ms&libraries=places&callback=initMap"></script>
+
+  </body>
+</html>

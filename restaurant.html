@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#3397db"/>
+    <title>Restaurant Info</title>
+    <link rel="icon" type="image/png" href="/favicon.ico.png" sizes="32x32">
+    <link rel="stylesheet" src="//normalize-css.googlecode.com/svn/trunk/normalize.css" />
+    <link rel="manifest" href="/manifest.json">
+    <link rel="stylesheet" href="css/styles.css" type="text/css">
+  </head>
+  <body class="inside">
+
+    <!-- header -->
+    <header>
+
+      <nav>
+          <h1><a href="/">Restaurant<br>Reviews</a></h1>
+      </nav>
+      <!-- skip-link -->
+    <a href="#restaurant" class="skip-link" onclick="changeFocus();">Skip to restaurant details</a>
+
+      <ul id="breadcrumb" aria-label="Breadcrumb" role="navigation">
+        <li><a href="/">Home</a></li>
+      </ul>
+
+    </header>
+
+    <!-- main -->
+    <main id="maincontent">
+
+      <section id="map-container">
+        <div id="map" tabindex="0" role="application" aria-label="Map with restaurants in New York"></div>
+      </section>
+
+      <section id="restaurant-container">
+        <h2 id="restaurant-name" tabindex="-1"></h2>
+        <div id="restaurant-div" >
+            <img id="restaurant-img" tabindex="0">
+            <p id="restaurant-cuisine" aria-label="restaurant cuisine"></p>
+            <p id="restaurant-address" aria-label="restaurant adress"></p>
+        </div>
+        <table id="restaurant-hours" tabindex="0" role="table" aria-label="restaurant hours"></table>
+      </section>
+
+      <section id="reviews-container">
+        <ul id="reviews-list"></ul>
+      </section>
+
+    </main>
+
+    <!-- footer -->
+    <footer id="footer">
+      Copyright (c) 2017 <a href="/"><strong>Restaurant Reviews</strong></a> All Rights Reserved.
+    </footer>
+
+    <!-- script -->
+    <script type="text/javascript" src="js/dbhelper.js"></script>
+    <script type="text/javascript" src="js/restaurant_info.js"></script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCCW7kkA7SU-iDqKCur4Vq4QDcvAghV1ms&libraries=places&callback=initMap"></script>
+
+  </body>
+</html>
