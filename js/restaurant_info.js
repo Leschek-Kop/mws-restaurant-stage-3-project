@@ -20,14 +20,14 @@ window.initMap = () => {
   });
 }
 
-/**
- * Add additional elements to HTML.
- * a11y audit: iframe title
- */
-window.onload = () => {
-  var iframeDocument = document.getElementsByTagName('iframe')[0];
-  iframeDocument.title = 'Map content';
-}
+///**
+// * Add additional elements to HTML.
+// * a11y audit: iframe title
+// */
+//window.onload = () => {
+//  var iframeDocument = document.getElementsByTagName('iframe')[0];
+//  iframeDocument.title = 'Map content';
+//}
 
 /**
  * Get current restaurant from page URL.
