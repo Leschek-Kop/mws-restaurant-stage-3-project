@@ -161,7 +161,12 @@ createRestaurantHTML = (restaurant) => {
   picture.append(source);
   picture.append(image);
   li.append(picture);
-
+    
+  const favHeart = document.createElement('div');
+  favHeart.setAttribute('title', 'mark as one of your favorite restaurants');
+  favHeart.setAttribute('class', 'heart');
+  li.append(favHeart);
+    
   const name = document.createElement('h2');
   name.innerHTML = restaurant.name;
   li.append(name);

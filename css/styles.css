@@ -169,6 +169,39 @@ h2:focus{
   min-width: 48px;
   min-height: 48px;
 }
+/* ====================== Favorite Restaurant ===================== */
+/* Code copied from: https://css-tricks.com/books/volume-i/make-heart-shape/ and bug-fixed*/
+.heart {
+  background-color: #ccc;
+  height: 30px;
+  transform: rotate(-45deg);
+  width: 30px;
+  position: absolute;
+  top: 30px;
+  left: 30px;
+}
+.heart:before,
+.heart:after {
+  content: "";
+  background-color: #ccc;
+  border-radius: 50%;
+  height: 30px;
+  position: absolute;
+  width: 30px;
+  right: -15px;
+}
+.heart:before {
+  top: -15px;
+  right: 0;
+}
+.heart:hover{
+    cursor: pointer;
+}
+.heart.fav,
+.heart.fav::before,
+.heart.fav::after {
+    background-color: red;
+}
 
 /* ====================== Restaurant Listing ====================== */
 #restaurants-list {
@@ -184,6 +217,7 @@ h2:focus{
   font-family: Arial,sans-serif;
   margin: 10px;
   padding: 15px;
+  position: relative;
 }
 #restaurants-list .restaurant-img {
   background-color: #ccc;
