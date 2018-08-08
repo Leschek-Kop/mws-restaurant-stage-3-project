@@ -35,7 +35,6 @@
       </section>
 
       <section id="restaurant-container">
-        <div title="mark as one of your favorite restaurants" class="heart"></div>
         <h2 id="restaurant-name" tabindex="-1"></h2>
         <div id="restaurant-div" >
             <img id="restaurant-img" tabindex="0">
@@ -47,6 +46,20 @@
 
       <section id="reviews-container">
         <ul id="reviews-list"></ul>
+      </section>
+      
+      <section id="reviews-form">
+        <div id="reviews-create">
+            <form action="/">
+              <label for="name">Name</label>
+              <input type="text" name="firstName" id="name" value=""><br>
+              <label for="female">Female</label>
+              <input type="radio" name="gender" id="female" value="female"><br>
+              <label for="other">Other</label>
+              <input type="radio" name="gender" id="other" value="other"><br><br>
+              <input type="submit" value="Submit">
+            </form>
+        </div>
       </section>
 
     </main>

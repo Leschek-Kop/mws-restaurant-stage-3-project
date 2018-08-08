@@ -165,6 +165,21 @@ createRestaurantHTML = (restaurant) => {
   const favHeart = document.createElement('div');
   favHeart.setAttribute('title', 'mark as one of your favorite restaurants');
   favHeart.setAttribute('class', 'heart');
+  
+  favHeart.onclick = function(){
+      restaurant.is_favorite = !restaurant.is_favorite;
+      DBHelper.updateFavRestaurant(restaurant.id, restaurant.is_favorite, (error, restaurants) => {
+          if (error) { // Got an error!
+              //TODO Information wenn was schief gegangen ist!
+              console.error(error);
+          } else {
+               this.classList.toggle('fav');
+          }
+      });
+  }
+  if (restaurant.is_favorite) {
+      favHeart.classList.toggle('fav');
+  }
   li.append(favHeart);
     
   const name = document.createElement('h2');

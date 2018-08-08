@@ -382,6 +382,10 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             serveContent(event.request)
         );
+    }else if (requestUrl.search.indexOf('?is_favorite=') == 0) {
+        event.respondWith(
+            updateFavRestaurant(event.request)
+        );
     } else {
         event.respondWith(
             serveSide(event.request)
@@ -426,6 +430,16 @@ serveContent = (request) => {
 }
 
 /**
+* handle favorite restaurant update in db.
+ */
+updateFavRestaurant = (request) => {
+    //TODO Handler um die DB informationen zu updaten (bei erfolg!) und die request raus zuschicken!
+    return fetch(request).then((networkResponse) => {
+        return networkResponse;
+    });
+}
+
+/**
 * handle restaurant-local cache and idb data.
  */
 serveSide = (request) => {
@@ -451,6 +465,13 @@ serveSide = (request) => {
                     dbPromise.then(db => {
                         const tx = db.transaction(idbName+version, 'readwrite');
                         data.forEach((d) => {
+                            if(d.is_favorite && typeof(d.is_favorite) != 'boolean'){
+                                  if(d.is_favorite === 'true'){
+                                      d.is_favorite = true;
+                                  }else{
+                                      d.is_favorite = false;
+                                  }
+                              }
                             tx.objectStore(idbName+version).put({
                                 id: d['id'],
                                 data: d

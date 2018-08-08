@@ -27,6 +27,15 @@ class DBHelper {
               const error = (`Parse data to json failed.`);
               callback(error, null);
           }else{
+              data.forEach(d =>{
+              if(d.is_favorite && typeof(d.is_favorite) != 'boolean'){
+                  if(d.is_favorite === 'true'){
+                      d.is_favorite = true;
+                  }else{
+                      d.is_favorite = false;
+                  }
+              }
+              })
               callback(null, data);  
           }
       }).catch((e) => {
@@ -34,6 +43,32 @@ class DBHelper {
       });
   }
 
+  /**
+   * Update favorite Restaurant.
+   */
+  static updateFavRestaurant(id, isFav, callback){
+      fetch(`${DBHelper.DATABASE_URL}/${id}/?is_favorite=${isFav}`, {
+          method: 'PUT'
+      }).then((response) => {
+          if (response.status === 200) { // Got a success response from server!
+              return response.json();
+          } else { // Oops!. Got an error from server.
+              const error = (`Request failed. Returned status of ${response.status}`);
+              callback(error, null);
+          }
+      }).then((data)=>{
+          if(!data){
+              const error = (`Parse data to json failed.`);
+              callback(error, null);
+          }else{
+              data.is_favorite = (data.is_favorite == 'true');
+              callback(null, data);
+          }
+      }).catch((e) => {
+          console.log('uuppps updating favorite restaurant went wrong. Error: ', e);
+      });
+  }
+    
   /**
    * Fetch a restaurant by its ID.
    */

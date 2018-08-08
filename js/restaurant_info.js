@@ -95,8 +95,16 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
+    
   // fill reviews
+  //TODO Load reviews
   fillReviewsHTML();
+  //TODO Create Form
+    
+  //Create Form
+  createReviewForm();
+    
+    
 }
 
 /**
@@ -184,6 +192,13 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
   return li;
+}
+
+/**
+ * Creates Form-Elements.
+ */
+createReviewForm = () => {
+  //ToDo Hier werden die spezifischen form anpassugen erledigt
 }
 
 /**
