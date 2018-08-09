@@ -102,7 +102,7 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   //TODO Create Form
     
   //Create Form
-  createReviewForm();
+  //createReviewForm();
     
     
 }
@@ -192,13 +192,6 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
   return li;
-}
-
-/**
- * Creates Form-Elements.
- */
-createReviewForm = () => {
-  //ToDo Hier werden die spezifischen form anpassugen erledigt
 }
 
 /**

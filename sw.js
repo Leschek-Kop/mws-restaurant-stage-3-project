@@ -324,7 +324,8 @@
 /**
 * Variables Service Worker.
  */
-const version = 'v1';
+const versionNo = 1;
+const version = `v${versionNo}`;
 const staticCachName = 'restaurant-local-'+version;
 const contentImgsCache = 'restaurant-imgs-'+version;
 const contentCache = 'restaurant-web-'+version;
@@ -334,7 +335,7 @@ const idbName = 'restaurant-db-';
 * Create DB
 */
 //Promise welcher zum setzen und holen von items in der DB ist
-let dbPromise = idb.open(idbName+version, 1, function(upgradeDb){
+let dbPromise = idb.open(idbName+version, versionNo, function(upgradeDb){
     //DB contains objectstore -> keyVal
     var restaurantsStore = upgradeDb.createObjectStore(idbName+version, {
         keyPath: 'id'
@@ -435,6 +436,27 @@ serveContent = (request) => {
 updateFavRestaurant = (request) => {
     //TODO Handler um die DB informationen zu updaten (bei erfolg!) und die request raus zuschicken!
     return fetch(request).then((networkResponse) => {
+        if (networkResponse.status == 200){
+            const url = new URL(networkResponse.url);
+            const posNo = url.pathname.indexOf('ts/') + 3;
+            const id = parseInt(url.pathname.slice(posNo, url.pathname.length - 1));
+            let isFav = url.search.slice(-4);
+            if (isFav == 'true'){
+                isFav = true;
+            }else {
+                isFav = false;
+            }
+            //update DB
+            let dbProm = idb.open(idbName+version, versionNo);
+            dbProm.then(db => {
+                return db.transaction(idbName+version).objectStore(idbName+version).get(id);
+            }).then(obj => {
+                obj.data.is_favorite = isFav;
+                idb.open(idbName+version, versionNo).then(db => {
+                    return db.transaction(idbName+version, 'readwrite').objectStore(idbName+version).put(obj);
+                }).then(obj => console.log('DB updated for Restaurant-ID: ', obj));
+            });
+        }
         return networkResponse;
     });
 }
@@ -466,12 +488,12 @@ serveSide = (request) => {
                         const tx = db.transaction(idbName+version, 'readwrite');
                         data.forEach((d) => {
                             if(d.is_favorite && typeof(d.is_favorite) != 'boolean'){
-                                  if(d.is_favorite === 'true'){
-                                      d.is_favorite = true;
-                                  }else{
-                                      d.is_favorite = false;
-                                  }
-                              }
+                                if(d.is_favorite === 'true'){
+                                    d.is_favorite = true;
+                                }else{
+                                    d.is_favorite = false;
+                                }
+                            }
                             tx.objectStore(idbName+version).put({
                                 id: d['id'],
                                 data: d
