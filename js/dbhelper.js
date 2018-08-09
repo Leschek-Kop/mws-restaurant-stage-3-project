@@ -44,6 +44,31 @@ class DBHelper {
   }
 
   /**
+   * Fetch restaurants review by id.
+   */
+  static fetchRestaurantReview(id, callback){
+      const url = new URL(DBHelper.DATABASE_URL);
+      fetch(`${url.origin}/reviews/?restaurant_id=${id}`).then((response) => {
+          if (response.status === 200) { // Got a success response from server!
+              return response.json();
+          } else { // Oops!. Got an error from server.
+              const error = (`Request failed. Returned status of ${response.status}`);
+              callback(error, null);
+          }
+      }).then((data)=>{
+          if(!data){
+              const error = (`Parse data to json failed.`);
+              callback(error, null);
+          }else{
+              data.is_favorite = (data.is_favorite == 'true');
+              callback(null, data);
+          }
+      }).catch((e) => {
+          console.log('uuppps fetching restaurants review went wrong. Error: ', e);
+      });
+  }
+    
+  /**
    * Update favorite Restaurant.
    */
   static updateFavRestaurant(id, isFav, callback){

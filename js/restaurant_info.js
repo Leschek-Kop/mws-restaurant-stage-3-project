@@ -95,16 +95,20 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
   if (restaurant.operating_hours) {
     fillRestaurantHoursHTML();
   }
-    
   // fill reviews
   //TODO Load reviews
-  fillReviewsHTML();
+    DBHelper.fetchRestaurantReview(restaurant.id, (error, review) => {
+          if (error) { // Got an error!
+              //TODO Information wenn was schief gegangen ist!
+              console.error(error);
+          } else {
+              self.restaurant.reviews = review;
+              fillReviewsHTML();
+          }
+      });
   //TODO Create Form
-    
   //Create Form
   //createReviewForm();
-    
-    
 }
 
 /**
@@ -131,7 +135,6 @@ fillRestaurantHoursHTML = (operatingHours = self.restaurant.operating_hours) => 
     const time = document.createElement('td');
     time.innerHTML = operatingHours[key];
     row.appendChild(time);
-
     hours.appendChild(row);
   }
 }
@@ -176,8 +179,8 @@ createReviewHTML = (review) => {
   const name = document.createElement('p');
   name.innerHTML = review.name;
 
-  const date = document.createElement('span');
-  date.innerHTML = review.date;
+  const date = document.createElement('span');    
+  date.innerHTML = getDateTime(review.createdAt);
   name.appendChild(date);
   head.appendChild(name);
   li.appendChild(head);
@@ -192,6 +195,19 @@ createReviewHTML = (review) => {
   li.appendChild(comments);
 
   return li;
+}
+
+/**
+ * Converts timestamp to date-time -> Code snippet from: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
+ */
+getDateTime = (ts) => {
+    var date = new Date(ts);
+    var year = date.getFullYear();
+    var month = ("0"+(date.getMonth()+1)).substr(-2);
+    var day = ("0"+date.getDate()).substr(-2);
+    var hour = ("0"+date.getHours()).substr(-2);
+    var minutes = ("0"+date.getMinutes()).substr(-2);
+    return year+"-"+month+"-"+day+" "+hour+":"+minutes;
 }
 
 /**
