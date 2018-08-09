@@ -469,8 +469,38 @@ updateFavRestaurant = (request) => {
 * handle restaurant-local cache and idb data.
  */
 serveReviews = (request) => {
+    const id = parseInt(request.url.slice(-1));
+    let dbReviews = idb.open(idbName+version, versionNo).then(db => {
+        return db.transaction(idbName+version).objectStore(idbName+version).get(id);
+    }).then(obj => {
+        if(obj.data.reviews){
+            return reviews = obj.data.reviews;
+        }
+    });
+    //Try getting new Reviews
     return fetch(request).then((networkResponse) => {
+        if (networkResponse.status == 200){
+            let dbProm = idb.open(idbName+version, versionNo);
+            const nrclone = networkResponse.clone();
+            nrclone.json().then(data => {
+                dbProm.then(db => {
+                    return db.transaction(idbName+version).objectStore(idbName+version).get(id);
+                }).then(obj => {
+                    obj.data.reviews = data;
+                    console.log('Obj DB: ', obj);
+                    idb.open(idbName+version, versionNo).then(db => {
+                        return db.transaction(idbName+version, 'readwrite').objectStore(idbName+version).put(obj);
+                    }).then(obj => console.log('DB updated for Restaurant-ID: ', obj));
+                });
+            });
+        }
+        dbReviews.then(() => console.log('Use new Reviews!'));
         return networkResponse;
+    }).catch(e => {
+        return dbReviews.then(d => {
+            console.log('Use old Reviews!')
+            return new Response(JSON.stringify(reviews), { "status" : 200 , "statusText" : "OK" });
+        });
     });
 }
 

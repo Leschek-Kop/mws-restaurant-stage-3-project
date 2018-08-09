@@ -60,7 +60,6 @@ class DBHelper {
               const error = (`Parse data to json failed.`);
               callback(error, null);
           }else{
-              data.is_favorite = (data.is_favorite == 'true');
               callback(null, data);
           }
       }).catch((e) => {
