@@ -387,9 +387,13 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             updateFavRestaurant(event.request)
         );
-    } else {
+    }else if (requestUrl.pathname === '/reviews/') {
         event.respondWith(
-            serveSide(event.request)
+            serveReviews(event.request)
+        );
+    }else {
+        event.respondWith(
+            serveSite(event.request)
         );
     }
 });
@@ -464,7 +468,16 @@ updateFavRestaurant = (request) => {
 /**
 * handle restaurant-local cache and idb data.
  */
-serveSide = (request) => {
+serveReviews = (request) => {
+    return fetch(request).then((networkResponse) => {
+        return networkResponse;
+    });
+}
+
+/**
+* handle restaurant-local cache and idb data.
+ */
+serveSite = (request) => {
     var reqUrl = new URL(request.url);
     var storageUrl = request.url;    
     if (reqUrl.pathname === '/restaurants'){// Put restaurant data to idb -> NEW code        
