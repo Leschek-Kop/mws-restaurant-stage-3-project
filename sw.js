@@ -469,7 +469,7 @@ updateFavRestaurant = (request) => {
 * handle restaurant-local cache and idb data.
  */
 serveReviews = (request) => {
-    const id = parseInt(request.url.slice(-1));
+    const id = parseInt(request.url.slice(request.url.indexOf('=') + 1));
     let dbReviews = idb.open(idbName+version, versionNo).then(db => {
         return db.transaction(idbName+version).objectStore(idbName+version).get(id);
     }).then(obj => {
