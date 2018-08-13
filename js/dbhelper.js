@@ -66,6 +66,25 @@ class DBHelper {
           console.log('uuppps fetching restaurants review went wrong. Error: ', e);
       });
   }
+
+  /**
+  * send new review to server
+  */
+  static addNewReview(review, callback){
+      const url = new URL(DBHelper.DATABASE_URL);
+      fetch(`${url.origin}/reviews/`, {
+          method: 'POST',
+          headers: {
+            "Content-Type": "application/json; charset=utf-8"
+        },
+          body: JSON.stringify(review)
+      }).then(obj => {
+          //TODO Handler bei Erfolg
+          console.log('Review successfully uploaded ', obj);
+      }).catch((e) => {
+          console.log('uuppps sending restaurants review to server went wrong. Error: ', e);
+      });
+  }
     
   /**
    * Update favorite Restaurant.

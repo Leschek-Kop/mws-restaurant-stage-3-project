@@ -160,6 +160,8 @@ fillReviewsHTML = (reviews = self.restaurant.reviews) => {
   reviews.forEach(review => {
     ul.appendChild(createReviewHTML(review));
   });
+    
+  ul.appendChild(createAddReviewHTML());
   container.appendChild(ul);
 }
 
@@ -198,10 +200,140 @@ createReviewHTML = (review) => {
 }
 
 /**
+ * Add review HTML form.
+ */
+createAddReviewHTML = () => {
+  //create list element
+  const li = document.createElement('li');
+  var att = document.createAttribute('aria-label');
+  att.value = `Add your restaurant review.`;
+  li.setAttributeNode(att);
+  li.setAttribute('tabindex', '0');
+  const head = document.createElement('div')
+  head.className = 'head';
+  const name = document.createElement('p');
+  name.innerHTML = 'Add Review';
+  const date = document.createElement('span');    
+  date.innerHTML = getDateTime();
+  name.appendChild(date);
+  head.appendChild(name);
+  li.appendChild(head);
+  const rating = document.createElement('span');
+  rating.className = 'rating';
+  rating.innerHTML = `Rating: <span id="ratingNo">5</span>`;
+  li.appendChild(rating);
+  const comments = document.createElement('p');
+  comments.innerHTML = 'Add your restaurant review:';
+  li.appendChild(comments);
+
+  //form
+  const div = document.createElement('div');
+  div.id = 'createReview';
+  const form = document.createElement('form');
+  ////Name
+  const labelName = document.createElement('label');
+  labelName.for = 'name';
+  labelName.innerHTML = 'Name';
+  form.append(labelName);
+  const inputName = document.createElement('input');
+  inputName.type = 'text';
+  inputName.id = 'name';
+  form.append(inputName);
+  form.append(document.createElement('br'));
+  ////Rating
+  const labelRating = document.createElement('label');
+  labelRating.for = 'rating';
+  labelRating.innerHTML = 'Rating';
+  form.append(labelRating);
+  const inputRating = document.createElement('select');
+  inputRating.id = 'rating';
+  const inputRatingOpt1 = document.createElement('option');
+  inputRatingOpt1.value = 1;
+  inputRatingOpt1.innerHTML = 1;
+  const inputRatingOpt2 = document.createElement('option');
+  inputRatingOpt2.value = 2;
+  inputRatingOpt2.innerHTML = 2;
+  const inputRatingOpt3 = document.createElement('option');
+  inputRatingOpt3.value = 3;
+  inputRatingOpt3.innerHTML = 3;
+  const inputRatingOpt4 = document.createElement('option');
+  inputRatingOpt4.value = 4;
+  inputRatingOpt4.innerHTML = 4;
+  const inputRatingOpt5 = document.createElement('option');
+  inputRatingOpt5.value = 5;
+  inputRatingOpt5.innerHTML = 5;
+  inputRating.append(inputRatingOpt1);
+  inputRating.append(inputRatingOpt2);
+  inputRating.append(inputRatingOpt3);
+  inputRating.append(inputRatingOpt4);
+  inputRating.append(inputRatingOpt5);
+  inputRating.value = 5;
+  inputRating.onchange = () => {
+      const no = document.getElementById('ratingNo');
+      no.innerHTML = document.getElementById('rating').value;
+  }
+  form.append(inputRating);
+  form.append(document.createElement('br'));
+  ////Text area
+  const labelTextArea = document.createElement('label');
+  labelTextArea.for = 'comment';
+  labelTextArea.innerHTML = 'Your comment';
+  form.append(labelTextArea);
+  const inputTextArea = document.createElement('textarea');
+  inputTextArea.id = 'comment';
+  inputTextArea.rows = '10';
+  inputTextArea.cols = '50';
+  inputTextArea.value = 'write your review...';
+  form.append(inputTextArea);
+  form.append(document.createElement('br'));
+  ////Submit Button
+  const btn = document.createElement('input');
+  btn.setAttribute('type', 'button');
+  btn.setAttribute('value', 'submit');
+  btn.onclick = submitReview;
+  form.append(btn);
+  div.append(form);
+  li.appendChild(div);
+  return li;
+}
+
+/**
+/* create new review and send to server.
+*/
+submitReview = () => {
+    const name = document.getElementById('name').value;
+    const rating = document.getElementById('rating').value;
+    const comment = document.getElementById('comment').value;
+    
+    //TODO prüfen ob die Daten da sind
+    
+    const review = {
+        restaurant_id: self.restaurant.id,
+        name: name,
+        rating: rating,
+        comments: comment
+    }
+    console.log(review);
+    DBHelper.addNewReview(review, (error, success) => {
+          if (error) { // Got an error!
+              //TODO Information wenn was schief gegangen ist!
+              console.error(error);
+          } else {
+               console.log(success);
+          }
+      });
+}
+
+/**
  * Converts timestamp to date-time -> Code snippet from: https://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
  */
 getDateTime = (ts) => {
-    var date = new Date(ts);
+    var date;
+    if(!ts){
+        date = new Date();
+    }else{
+        date = new Date(ts);
+    }
     var year = date.getFullYear();
     var month = ("0"+(date.getMonth()+1)).substr(-2);
     var day = ("0"+date.getDate()).substr(-2);
