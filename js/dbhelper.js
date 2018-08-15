@@ -74,15 +74,14 @@ class DBHelper {
       const url = new URL(DBHelper.DATABASE_URL);
       fetch(`${url.origin}/reviews/`, {
           method: 'POST',
-          headers: {
-            "Content-Type": "application/json; charset=utf-8"
-        },
           body: JSON.stringify(review)
       }).then(obj => {
           //TODO Handler bei Erfolg
           console.log('Review successfully uploaded ', obj);
+          callback(null, obj);
       }).catch((e) => {
           console.log('uuppps sending restaurants review to server went wrong. Error: ', e);
+          callback(e, null);
       });
   }
     

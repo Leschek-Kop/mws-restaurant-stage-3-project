@@ -387,9 +387,13 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             updateFavRestaurant(event.request)
         );
-    }else if (requestUrl.pathname === '/reviews/') {
+    }else if (requestUrl.pathname === '/reviews/' && requestUrl.search !== '') {
         event.respondWith(
             serveReviews(event.request)
+        );
+    }else if (requestUrl.pathname === '/reviews/') {
+        event.respondWith(
+            addReview(event.request)
         );
     }else {
         event.respondWith(
@@ -503,6 +507,14 @@ serveReviews = (request) => {
         });
     });
 }
+
+/**
+* Add new review to Server and handles offline - db in case there is no connection
+*/
+addReview = (request) => {
+    return fetch(request);
+} 
+
 
 /**
 * handle restaurant-local cache and idb data.

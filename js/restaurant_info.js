@@ -96,20 +96,16 @@ fillRestaurantHTML = (restaurant = self.restaurant) => {
     fillRestaurantHoursHTML();
   }
   // fill reviews
-  //TODO Load reviews
-    DBHelper.fetchRestaurantReview(restaurant.id, (error, review) => {
-          if (error) { // Got an error!
-              //TODO Information wenn was schief gegangen ist!
-              console.error(error);
-          } else {
-              self.restaurant.reviews = review;
-              fillReviewsHTML();
-          }
-      });
-  //TODO Create Form
-  //Create Form
-  //createReviewForm();
-}
+  DBHelper.fetchRestaurantReview(restaurant.id, (error, review) => {
+        if (error) { // Got an error!
+            //TODO Information wenn was schief gegangen ist!
+            console.error(error);
+        } else {
+            self.restaurant.reviews = review;
+            fillReviewsHTML();
+        }
+    });
+  }
 
 /**
  * Create restaurant operating hours HTML table and add it to the webpage.
@@ -238,6 +234,11 @@ createAddReviewHTML = () => {
   const inputName = document.createElement('input');
   inputName.type = 'text';
   inputName.id = 'name';
+  inputName.onchange = () => {
+      name.innerHTML = document.getElementById('name').value;
+      date.innerHTML = getDateTime();
+      name.appendChild(date);
+  }
   form.append(inputName);
   form.append(document.createElement('br'));
   ////Rating
@@ -305,8 +306,7 @@ submitReview = () => {
     const rating = document.getElementById('rating').value;
     const comment = document.getElementById('comment').value;
     
-    //TODO prüfen ob die Daten da sind
-    
+    //TODO prüfen ob die Daten da sind    
     const review = {
         restaurant_id: self.restaurant.id,
         name: name,
@@ -320,6 +320,20 @@ submitReview = () => {
               console.error(error);
           } else {
                console.log(success);
+              const ul = document.getElementById('reviews-list');
+              ul.innerHTML = '';
+              const sec = document.getElementById('reviews-container');
+              sec.removeChild(sec.firstElementChild);
+              
+               DBHelper.fetchRestaurantReview(self.restaurant.id, (error, review) => {
+                    if (error) { // Got an error!
+                        //TODO Information wenn was schief gegangen ist!
+                        console.error(error);
+                    } else {
+                        self.restaurant.reviews = review;
+                        fillReviewsHTML();
+                    }
+                });
           }
       });
 }
