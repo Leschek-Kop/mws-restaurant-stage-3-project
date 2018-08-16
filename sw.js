@@ -462,7 +462,7 @@ updateFavRestaurant = (request) => {
                 obj.data.is_favorite = isFav;
                 idb.open(idbName+version, versionNo).then(db => {
                     return db.transaction(idbName+version, 'readwrite').objectStore(idbName+version).put(obj);
-                }).then(obj => console.log('DB updated for Restaurant-ID: ', obj));
+                });
             });
         }
         return networkResponse;
@@ -491,10 +491,9 @@ serveReviews = (request) => {
                     return db.transaction(idbName+version).objectStore(idbName+version).get(id);
                 }).then(obj => {
                     obj.data.reviews = data;
-                    console.log('Obj DB: ', obj);
                     idb.open(idbName+version, versionNo).then(db => {
                         return db.transaction(idbName+version, 'readwrite').objectStore(idbName+version).put(obj);
-                    }).then(obj => console.log('DB updated for Restaurant-ID: ', obj));
+                    });
                 });
             });
         }
@@ -502,7 +501,7 @@ serveReviews = (request) => {
         return networkResponse;
     }).catch(e => {
         return dbReviews.then(d => {
-            console.log('Use old Reviews!')
+            console.log('Use old Reviews!');
             return new Response(JSON.stringify(reviews), { "status" : 200 , "statusText" : "OK" });
         });
     });
@@ -512,7 +511,16 @@ serveReviews = (request) => {
 * Add new review to Server and handles offline - db in case there is no connection
 */
 addReview = (request) => {
-    return fetch(request);
+    return fetch(request).then((networkResponse) => {
+        if (networkResponse.status == 201){
+            return networkResponse;
+        }else{
+            //In die Offline DB packen
+        }
+    }).catch(e => {
+        //In die Offline DB packen
+        console.log('Konnte nicht hochgeladen werden!');
+    });
 } 
 
 

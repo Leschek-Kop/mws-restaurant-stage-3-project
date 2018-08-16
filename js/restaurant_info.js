@@ -201,6 +201,7 @@ createReviewHTML = (review) => {
 createAddReviewHTML = () => {
   //create list element
   const li = document.createElement('li');
+  li.id = 'newReview';
   var att = document.createAttribute('aria-label');
   att.value = `Add your restaurant review.`;
   li.setAttributeNode(att);
@@ -319,7 +320,6 @@ submitReview = () => {
               //TODO Information wenn was schief gegangen ist!
               console.error(error);
           } else {
-               console.log(success);
               const ul = document.getElementById('reviews-list');
               ul.innerHTML = '';
               const sec = document.getElementById('reviews-container');
@@ -332,6 +332,7 @@ submitReview = () => {
                     } else {
                         self.restaurant.reviews = review;
                         fillReviewsHTML();
+                        document.getElementById('newReview').scrollIntoView();
                     }
                 });
           }
