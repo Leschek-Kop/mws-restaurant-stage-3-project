@@ -230,7 +230,7 @@ createAddReviewHTML = () => {
   ////Name
   const labelName = document.createElement('label');
   labelName.for = 'name';
-  labelName.innerHTML = 'Name';
+  labelName.innerHTML = 'Name ';
   form.append(labelName);
   const inputName = document.createElement('input');
   inputName.type = 'text';
@@ -245,7 +245,7 @@ createAddReviewHTML = () => {
   ////Rating
   const labelRating = document.createElement('label');
   labelRating.for = 'rating';
-  labelRating.innerHTML = 'Rating';
+  labelRating.innerHTML = 'Rating ';
   form.append(labelRating);
   const inputRating = document.createElement('select');
   inputRating.id = 'rating';
@@ -307,17 +307,18 @@ submitReview = () => {
     const rating = document.getElementById('rating').value;
     const comment = document.getElementById('comment').value;
     
-    //TODO prüfen ob die Daten da sind    
+    //TODO prüfen ob die Daten da sind
+    
+    
     const review = {
         restaurant_id: self.restaurant.id,
         name: name,
         rating: rating,
         comments: comment
     }
-    console.log(review);
-    DBHelper.addNewReview(review, (error, success) => {
+    if (navigator.onLine){
+        DBHelper.addNewReview(review, (error, success) => {
           if (error) { // Got an error!
-              //TODO Information wenn was schief gegangen ist!
               console.error(error);
           } else {
               const ul = document.getElementById('reviews-list');
@@ -337,6 +338,10 @@ submitReview = () => {
                 });
           }
       });
+    }else{
+        console.log('You are offline...');
+        DBHelper.addOfflineReview(review);
+    }
 }
 
 /**

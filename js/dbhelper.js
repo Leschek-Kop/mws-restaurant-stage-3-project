@@ -86,6 +86,16 @@ class DBHelper {
   }
     
   /**
+  * send offline information to SW
+  */
+  static addOfflineReview(review){
+      const url = new URL(DBHelper.DATABASE_URL);
+      fetch(`${url.origin}/offline/?${JSON.stringify(review)}`, {
+          method: 'POST'
+      });
+  }
+    
+  /**
    * Update favorite Restaurant.
    */
   static updateFavRestaurant(id, isFav, callback){

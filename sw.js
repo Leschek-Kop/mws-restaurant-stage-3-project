@@ -335,12 +335,16 @@ const idbName = 'restaurant-db-';
 * Create DB
 */
 //Promise welcher zum setzen und holen von items in der DB ist
-let dbPromise = idb.open(idbName+version, versionNo, function(upgradeDb){
-    //DB contains objectstore -> keyVal
-    var restaurantsStore = upgradeDb.createObjectStore(idbName+version, {
-        keyPath: 'id'
-    });
-    restaurantsStore.createIndex('by-id','id');
+let dbPromise = idb.open(idbName+version, versionNo, upgradeDB => {
+  // Note: we don't use 'break' in this switch statement,
+  // the fall-through behaviour is what we want.
+  switch (upgradeDB.oldVersion) {
+    case 0:
+        var restaurantsStore = upgradeDB.createObjectStore(idbName+version, {
+            keyPath: 'id'
+        });
+        restaurantsStore.createIndex('by-id','id');
+    }
 });
 
 
@@ -395,12 +399,39 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             addReview(event.request)
         );
+    }else if (requestUrl.pathname === '/offline/') {        
+        event.respondWith(
+            addOfflineReview(getReviewFromSearch(requestUrl.search))
+        );
     }else {
         event.respondWith(
             serveSite(event.request)
         );
     }
 });
+
+/**
+* Get review Information out of search
+ */
+getReviewFromSearch = (search) => {
+    let review = search.slice(2,search.length-1);
+    //Replace %22 & %20
+    while(true){
+        let str = review.replace('%22', '').replace('%20', '');
+        if(review === str) break;
+        review = str;
+    }
+    //Code from: https://stackoverflow.com/questions/1086404/string-to-object-in-js
+    var properties = review.split(',');
+    var obj = {};
+    properties.forEach(function(property) {
+        var tup = property.split(':');
+        obj[tup[0]] = tup[1];
+    });
+    obj.restaurant_id = parseInt(obj.restaurant_id);
+    obj.rating = parseInt(obj.rating);
+    return obj;
+}
 
 /**
 * handle restaurant-imgs cache.
@@ -508,20 +539,35 @@ serveReviews = (request) => {
 }
 
 /**
-* Add new review to Server and handles offline - db in case there is no connection
+* Add new review to Server
 */
 addReview = (request) => {
+    // Schaue vorher ob in der Offline db was ist und sende dies mit
     return fetch(request).then((networkResponse) => {
         if (networkResponse.status == 201){
             return networkResponse;
         }else{
-            //In die Offline DB packen
+            console.log('...something went wrong!!');
         }
-    }).catch(e => {
-        //In die Offline DB packen
-        console.log('Konnte nicht hochgeladen werden!');
     });
-} 
+}
+
+/**
+* Add new review to offline - db in case there is no connection
+*/
+addOfflineReview = (OfflineReview) => {
+    console.log('Review to offline DB!: ', OfflineReview);
+    
+    let dbProm = idb.open(idbName+version, versionNo);
+    dbProm.then(db => {
+        return db.transaction(idbName+version).objectStore(idbName+version).get(OfflineReview.restaurant_id);
+    }).then(obj => {
+        obj.data.offline = OfflineReview;
+        idb.open(idbName+version, versionNo).then(db => {
+            return db.transaction(idbName+version, 'readwrite').objectStore(idbName+version).put(obj);
+        });
+    });
+}
 
 
 /**
