@@ -243,12 +243,12 @@ class DBHelper {
   /**
    * Restaurant image URL.
    */
-  static imageUrlForRestaurant(restaurant, w= "270", s="s") {
+  static imageUrlForRestaurant(restaurant, w= "270", s="s", e="jpg") {
       if(restaurant.photograph){
           const idxDot = 1;
-          return (`/img/${restaurant.photograph.slice(0, idxDot)}-${w}_${s}${restaurant.photograph.slice(idxDot, restaurant.photograph.length)}.jpg`);
+          return (`/img/${restaurant.photograph.slice(0, idxDot)}-${w}_${s}${restaurant.photograph.slice(idxDot, restaurant.photograph.length)}.${e}`);
       }
-      return (`/img/altImg-${w}_${s}.jpg`);
+      return (`/img/altImg-${w}_${s}.${e}`);
   }
 
   /**

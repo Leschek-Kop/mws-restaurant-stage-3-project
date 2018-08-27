@@ -160,10 +160,10 @@ createRestaurantHTML = (restaurant) => {
     
   const loadPicture = () => {
       image.className = 'restaurant-img';
-      image.srcset = `${DBHelper.imageUrlForRestaurant(restaurant, w='540', s='s_2x')} 2x,  ${DBHelper.imageUrlForRestaurant(restaurant, w='270', s='s')} 1x`;
+      image.srcset = `${DBHelper.imageUrlForRestaurant(restaurant, w='540', s='s_2x', e='webp')} 2x,  ${DBHelper.imageUrlForRestaurant(restaurant, w='270', s='s', e='webp')} 1x`;
       image.src = DBHelper.imageUrlForRestaurant(restaurant);
       source.media = '(min-width: 300px)';
-      source.srcset=`${DBHelper.imageUrlForRestaurant(restaurant, w='600', s='m_2x')} 2x, ${DBHelper.imageUrlForRestaurant(restaurant, w='300', s='m')} 1x`;
+      source.srcset=`${DBHelper.imageUrlForRestaurant(restaurant, w='600', s='m_2x', e='webp')} 2x, ${DBHelper.imageUrlForRestaurant(restaurant, w='300', s='m', e='webp')} 1x`;
   }
   function viewPic(changes, observer){
       changes.forEach(change => {
