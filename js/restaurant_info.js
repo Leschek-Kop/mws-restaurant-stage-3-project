@@ -229,7 +229,7 @@ createAddReviewHTML = () => {
   const form = document.createElement('form');
   ////Name
   const labelName = document.createElement('label');
-  labelName.for = 'name';
+  labelName.setAttribute('for', 'name');
   labelName.innerHTML = 'Name ';
   form.append(labelName);
   const inputName = document.createElement('input');
@@ -244,7 +244,7 @@ createAddReviewHTML = () => {
   form.append(document.createElement('br'));
   ////Rating
   const labelRating = document.createElement('label');
-  labelRating.for = 'rating';
+  labelRating.setAttribute('for', 'rating');
   labelRating.innerHTML = 'Rating ';
   form.append(labelRating);
   const inputRating = document.createElement('select');
@@ -278,13 +278,13 @@ createAddReviewHTML = () => {
   form.append(document.createElement('br'));
   ////Text area
   const labelTextArea = document.createElement('label');
-  labelTextArea.for = 'comment';
+  labelTextArea.setAttribute('for', 'comment');
   labelTextArea.innerHTML = 'Your comment';
   form.append(labelTextArea);
   const inputTextArea = document.createElement('textarea');
   inputTextArea.id = 'comment';
   inputTextArea.rows = '10';
-  inputTextArea.cols = '50';
+  inputTextArea.cols = '38';
   inputTextArea.value = 'write your review...';
   form.append(inputTextArea);
   form.append(document.createElement('br'));

@@ -148,12 +148,11 @@ fillRestaurantsHTML = (restaurants = self.restaurants) => {
  */
 createRestaurantHTML = (restaurant) => {
   const li = document.createElement('li');
-
   const image = document.createElement('img');
+  image.alt = `${restaurant.name}, a ${restaurant.cuisine_type} restaurant in ${restaurant.neighborhood}.`;    
   image.className = 'restaurant-img';
   image.srcset = `${DBHelper.imageUrlForRestaurant(restaurant, w='540', s='s_2x')} 2x, ${DBHelper.imageUrlForRestaurant(restaurant, w='270', s='s')} 1x`;
   image.src = DBHelper.imageUrlForRestaurant(restaurant);
-  image.alt = `${restaurant.name}, a ${restaurant.cuisine_type} restaurant in ${restaurant.neighborhood}.`;
   const picture = document.createElement('picture');
   const source = document.createElement('source');
   source.media = '(min-width: 300px)';
@@ -161,7 +160,7 @@ createRestaurantHTML = (restaurant) => {
   picture.append(source);
   picture.append(image);
   li.append(picture);
-    
+
   const favHeart = document.createElement('div');
   favHeart.setAttribute('title', 'mark as one of your favorite restaurants');
   favHeart.setAttribute('class', 'heart');
