@@ -265,4 +265,14 @@ class DBHelper {
     );
     return marker;
   }
+
+  /**
+   * send all offline reviews to server.
+   */
+  static sendOfflineReviewsToServer(){
+      const url = new URL(DBHelper.DATABASE_URL);
+      fetch(`${url.origin}/sendOfflineReviews/`, {
+          method: 'POST'
+      });
+  }
 }

@@ -238,3 +238,8 @@ startServiceWorker =() =>{
     console.log('Registration failed');
   });
 }
+
+/**
+ * on Online event, will send all offline Reviews to server.
+ */
+window.addEventListener("online", DBHelper.sendOfflineReviewsToServer);

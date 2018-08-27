@@ -399,9 +399,13 @@ self.addEventListener('fetch', (event) => {
         event.respondWith(
             addReview(event.request)
         );
-    }else if (requestUrl.pathname === '/offline/') {        
+    }else if (requestUrl.pathname === '/offline/') {   
         event.respondWith(
             addOfflineReview(getReviewFromSearch(requestUrl.search))
+        );
+    }else if (requestUrl.pathname === '/sendOfflineReviews/') {   
+        event.respondWith(
+            sendOfflineReview(requestUrl)
         );
     }else {
         event.respondWith(
@@ -638,4 +642,42 @@ serveSite = (request) => {
             });
         });
     }
+}
+
+/**
+* Send all Offline Reviews to Server and delete them from db.
+ */
+sendOfflineReview = (url) => {
+    let dbProm = idb.open(idbName+version, versionNo);
+    return dbProm.then(db => {
+            return db.transaction(idbName+version).objectStore(idbName+version).getAll();
+        }).then((allData) => {
+            let data = [];
+            for (let i = 0;i < allData.length; i++){
+                data.push(allData[i].data);
+            }
+            return {data: data, typ: 'idb'};//return data from idb
+        }).then((data) => {
+            console.log('Data: ', data);
+            console.log('Send offline data to server...');
+            for (let i = 0;i < data['data'].length; i++){
+                if(data['data'][i].offline){
+                    let offlineReviews = data['data'][i].offline;
+                    delete data['data'][i].offline;
+                   offlineReviews.forEach(offlineReview => {
+                       return fetch(`${url.origin}/reviews/`, {
+                           method: 'POST',
+                           body: JSON.stringify(offlineReview)
+                       }).then((networkResponse) => {
+                           //remove key an update db by key
+                           console.log('review send to server', offlineReview);
+                       });
+                   });
+                }
+            }
+            return data['data'];
+    }).then(d => {
+        console.log('Offline daten hochgeladen!');
+        return new Response(JSON.stringify(d['data']), { "status" : 200 , "statusText" : "OK" });
+    });
 }
