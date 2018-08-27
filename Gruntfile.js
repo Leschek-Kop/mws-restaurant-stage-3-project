@@ -22,27 +22,27 @@ module.exports = function(grunt) {
             */
             width: 270,
             suffix: "_s",
-            quality: 100
+            quality: 50
           },{
             width: 540,
             suffix: "_s_2x",
-            quality: 80
+            quality: 50
           },{
             width: 300,
             suffix: "_m",
-            quality: 100
+            quality: 50
           },{
             width: 600,
             suffix: "_m_2x",
-            quality: 80
+            quality: 50
           },{
             width: 370,
             suffix: "_l",
-            quality: 100
+            quality: 50
           },{
             width: 740,
             suffix: "_l_2x",
-            quality: 80
+            quality: 50
           }]
         },
 
@@ -74,7 +74,23 @@ module.exports = function(grunt) {
         },
       },
     },
-
+      
+      
+      cwebp: {
+      dynamic: {
+        options: {
+          q: 50
+        },
+        files: [{
+          expand: true,
+          cwd: 'img/', 
+          src: ['**/*.{png,jpg,gif}'],
+          dest: 'img/'
+        }]
+      }
+    }
+      
+      
     /* Copy the "fixed" images that don't go through processing into the images/directory */
     /*
     copy: {
@@ -92,6 +108,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-mkdir');
-  grunt.registerTask('default', ['clean', 'mkdir', 'responsive_images']);
+  grunt.loadNpmTasks('grunt-cwebp');
+  grunt.registerTask('default', ['clean', 'mkdir', 'responsive_images', 'cwebp']);
 
 };
