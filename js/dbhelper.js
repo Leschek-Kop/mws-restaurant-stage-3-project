@@ -88,10 +88,15 @@ class DBHelper {
   /**
   * send offline information to SW
   */
-  static addOfflineReview(review){
+  static addOfflineReview(review, callback){
       const url = new URL(DBHelper.DATABASE_URL);
       fetch(`${url.origin}/offline/?${JSON.stringify(review)}`, {
           method: 'POST'
+      }).then(obj => {
+          //TODO Handler bei Erfolg
+          callback(null, obj);
+      }).catch((e) => {
+          callback(e, null);
       });
   }
     

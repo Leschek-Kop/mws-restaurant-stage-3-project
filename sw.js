@@ -509,7 +509,13 @@ serveReviews = (request) => {
         return db.transaction(idbName+version).objectStore(idbName+version).get(id);
     }).then(obj => {
         if(obj.data.reviews){
-            return reviews = obj.data.reviews;
+            let reviews;
+            if(obj.data.offline){
+                reviews = obj.data.reviews.concat(obj.data.offline);
+            }else{
+                reviews = obj.data.reviews;
+            }
+            return reviews;
         }
     });
     //Try getting new Reviews
@@ -533,7 +539,7 @@ serveReviews = (request) => {
     }).catch(e => {
         return dbReviews.then(d => {
             console.log('Use old Reviews!');
-            return new Response(JSON.stringify(reviews), { "status" : 200 , "statusText" : "OK" });
+            return new Response(JSON.stringify(d), { "status" : 200 , "statusText" : "OK" });
         });
     });
 }
@@ -562,7 +568,8 @@ addOfflineReview = (OfflineReview) => {
     dbProm.then(db => {
         return db.transaction(idbName+version).objectStore(idbName+version).get(OfflineReview.restaurant_id);
     }).then(obj => {
-        obj.data.offline = OfflineReview;
+        if(!obj.data.offline) obj.data.offline = [];
+        obj.data.offline.push(OfflineReview);
         idb.open(idbName+version, versionNo).then(db => {
             return db.transaction(idbName+version, 'readwrite').objectStore(idbName+version).put(obj);
         });

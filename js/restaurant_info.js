@@ -340,7 +340,22 @@ submitReview = () => {
       });
     }else{
         console.log('You are offline...');
-        DBHelper.addOfflineReview(review);
+        DBHelper.addOfflineReview(review, (error, msg) => {
+            const ul = document.getElementById('reviews-list');
+            ul.innerHTML = '';
+            const sec = document.getElementById('reviews-container');
+            sec.removeChild(sec.firstElementChild);
+            DBHelper.fetchRestaurantReview(self.restaurant.id, (error, review) => {
+                if (error) { // Got an error!
+                    //TODO Information wenn was schief gegangen ist!
+                    console.error(error);
+                } else {
+                    self.restaurant.reviews = review;
+                    fillReviewsHTML();
+                    document.getElementById('newReview').scrollIntoView();
+                }
+            });
+        });
     }
 }
 
