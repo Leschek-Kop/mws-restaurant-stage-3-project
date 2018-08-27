@@ -72,7 +72,16 @@ article, aside, canvas, details, figcaption, figure, footer, header, hgroup, men
   font-weight: bold;
   top: 0;
 }
-
+/* ======================== Form ========================== */
+input,
+textarea,
+select{
+    font-size: 16px;
+}
+input[type="button"]:hover{
+    cursor: pointer;
+    background-color: #c66c05;
+}
 /* ====================== Navigation ====================== */
 nav {
   width: 100%;
@@ -382,7 +391,8 @@ h2:focus{
   color: #aaa;
   float:right;
 }
-#reviews-list li .rating {
+#reviews-list li .rating ,
+input[type="button"]{
   padding: 5px;
   border-radius: 3px;
   background-color: #ef7f00;
