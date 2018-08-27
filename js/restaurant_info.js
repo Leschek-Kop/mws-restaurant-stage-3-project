@@ -339,7 +339,6 @@ submitReview = () => {
           }
       });
     }else{
-        console.log('You are offline...');
         DBHelper.addOfflineReview(review, (error, msg) => {
             const ul = document.getElementById('reviews-list');
             ul.innerHTML = '';

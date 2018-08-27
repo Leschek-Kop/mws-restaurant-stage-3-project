@@ -538,11 +538,9 @@ serveReviews = (request) => {
                 });
             });
         }
-        dbReviews.then(() => console.log('Use new Reviews!'));
         return networkResponse;
     }).catch(e => {
         return dbReviews.then(d => {
-            console.log('Use old Reviews!');
             return new Response(JSON.stringify(d), { "status" : 200 , "statusText" : "OK" });
         });
     });
@@ -566,8 +564,6 @@ addReview = (request) => {
 * Add new review to offline - db in case there is no connection
 */
 addOfflineReview = (OfflineReview) => {
-    console.log('Review to offline DB!: ', OfflineReview);
-    
     let dbProm = idb.open(idbName+version, versionNo);
     dbProm.then(db => {
         return db.transaction(idbName+version).objectStore(idbName+version).get(OfflineReview.restaurant_id);
@@ -578,6 +574,7 @@ addOfflineReview = (OfflineReview) => {
             return db.transaction(idbName+version, 'readwrite').objectStore(idbName+version).put(obj);
         });
     });
+    return new Response();
 }
 
 
@@ -625,7 +622,6 @@ serveSite = (request) => {
                 });
             }
         }).then((data) => {
-            //console.log(data);
             return new Response(JSON.stringify(data['data']), { "status" : 200 , "statusText" : "OK" });
         });
     }else{// Cache page data -> OLD code
@@ -649,35 +645,50 @@ serveSite = (request) => {
  */
 sendOfflineReview = (url) => {
     let dbProm = idb.open(idbName+version, versionNo);
-    return dbProm.then(db => {
+    dbProm.then(db => {
             return db.transaction(idbName+version).objectStore(idbName+version).getAll();
         }).then((allData) => {
             let data = [];
             for (let i = 0;i < allData.length; i++){
                 data.push(allData[i].data);
             }
-            return {data: data, typ: 'idb'};//return data from idb
+            return data;//return data from idb
         }).then((data) => {
-            console.log('Data: ', data);
-            console.log('Send offline data to server...');
-            for (let i = 0;i < data['data'].length; i++){
-                if(data['data'][i].offline){
-                    let offlineReviews = data['data'][i].offline;
-                    delete data['data'][i].offline;
+            for (let i = 0;i < data.length; i++){
+                if(data[i].offline){
+                    let offlineReviews = data[i].offline;
+                    delete data[i].offline;
                    offlineReviews.forEach(offlineReview => {
                        return fetch(`${url.origin}/reviews/`, {
                            method: 'POST',
                            body: JSON.stringify(offlineReview)
-                       }).then((networkResponse) => {
-                           //remove key an update db by key
-                           console.log('review send to server', offlineReview);
                        });
                    });
                 }
             }
-            return data['data'];
-    }).then(d => {
-        console.log('Offline daten hochgeladen!');
-        return new Response(JSON.stringify(d['data']), { "status" : 200 , "statusText" : "OK" });
+            return data;
+    }).then(data => {
+        let dbProm = idb.open(idbName+version, versionNo);
+        dbProm.then(db => {
+            //TODO Update offline to reviews
+            //Adding to idb
+            const tx = db.transaction(idbName+version, 'readwrite');
+            tx.objectStore(idbName+version).clear();
+            data.forEach((d) => {
+                if(d.is_favorite && typeof(d.is_favorite) != 'boolean'){
+                    if(d.is_favorite === 'true'){
+                        d.is_favorite = true;
+                    }else{
+                        d.is_favorite = false;
+                    }
+                }
+                tx.objectStore(idbName+version).put({
+                    id: d['id'],
+                    data: d
+                });
+            });
+            return tx.complete;
+        });
     });
+    return new Response();
 }
